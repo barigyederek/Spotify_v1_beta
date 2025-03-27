@@ -1,7 +1,7 @@
 // Spotify API credentials (from your Spotify Developer Dashboard)
 const CLIENT_ID = 'YOUR_CLIENT_ID';
 const CLIENT_SECRET = 'YOUR_CLIENT_SECRET'; // ⚠️ Never expose this in production!
-const REDIRECT_URI = " https://barigyederek.github.io/Spotify_v1_beta/ "; // GitHub Pages URL
+const REDIRECT_URI = "https://barigyederek.github.io/Spotify_v1_beta"; // GitHub Pages URL
 
 // LocalStorage keys
 const ACCESS_TOKEN_KEY = 'spotify_access_token';
