@@ -79,23 +79,58 @@ async function refreshToken() {
   }
 }
 
-// 5. Display Playlists in Table
-function displayPlaylists(playlists) {
-  playlistsTable.innerHTML = `
-    <table>
-      <tr>
-        <th>Playlist</th>
-        <th>Tracks</th>
-      </tr>
-      ${playlists.map(playlist => `
-        <tr>
-          <td>${playlist.name}</td>
-          <td>${playlist.tracks.total}</td>
-        </tr>
-      `).join('')}
-    </table>
-  `;
-}
+// 5. Display Playlists in Three Columns + Track Loading
+async function displayPlaylists(playlists) {
+    const playlistsList = document.getElementById('playlists-list');
+    const trackCounts = document.getElementById('track-counts');
+    
+    playlistsList.innerHTML = '';
+    trackCounts.innerHTML = '';
+  
+    playlists.forEach(playlist => {
+      // Playlist column
+      const playlistItem = document.createElement('div');
+      playlistItem.className = 'playlist-item';
+      playlistItem.textContent = playlist.name;
+      playlistItem.addEventListener('click', () => loadPlaylistTracks(playlist));
+      playlistsList.appendChild(playlistItem);
+  
+      // Track count column
+      const trackCountItem = document.createElement('div');
+      trackCountItem.className = 'track-item';
+      trackCountItem.textContent = playlist.tracks.total;
+      trackCounts.appendChild(trackCountItem);
+    });
+  }
+  
+  // 6. Load Tracks for Selected Playlist
+  async function loadPlaylistTracks(playlist) {
+    const songsList = document.getElementById('songs-list');
+    const playlistName = document.getElementById('current-playlist-name');
+    
+    playlistName.textContent = playlist.name;
+    songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
+  
+    try {
+      const response = await fetch(playlist.tracks.href, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('spotify_access_token')}` }
+      });
+      const data = await response.json();
+      
+      songsList.innerHTML = '';
+      data.items.forEach(item => {
+        const trackItem = document.createElement('div');
+        trackItem.className = 'track-item';
+        trackItem.innerHTML = `
+          <span class="track-name">${item.track.name}</span>
+          <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
+        `;
+        songsList.appendChild(trackItem);
+      });
+    } catch (error) {
+      songsList.innerHTML = '<div class="error">Failed to load tracks</div>';
+    }
+  }
 
 // Auto-fetch playlists if already logged in
 if (localStorage.getItem(ACCESS_TOKEN_KEY)) {

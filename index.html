@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spotify Playlist Viewer</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist Viewer</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <div class="container">
-    <h1>Your Spotify Playlists</h1>
-    <button id="login-btn">Login with Spotify</button>
-    <div id="playlists-table"></div>
-  </div>
-  <script src="script.js"></script>
+    <div class="app-container">
+        <header class="spotify-header">
+            <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png"
+                alt="Spotify Logo" class="logo">
+            <h1>Your Playlists</h1>
+            <button id="login-btn" class="spotify-btn">
+                <span class="btn-icon">♪</span>
+                Login with Spotify
+            </button>
+        </header>
+
+        <div class="columns-container">
+            <!-- Column 1: Playlists -->
+            <div class="column playlists-column">
+                <h2><i class="fas fa-list"></i> Your Playlists</h2>
+                <div id="playlists-list" class="scrollable-content"></div>
+            </div>
+
+            <!-- Column 2: Track Count -->
+            <div class="column track-count-column">
+                <h2><i class="fas fa-music"></i> Tracks</h2>
+                <div id="track-counts" class="scrollable-content"></div>
+            </div>
+
+            <!-- Column 3: Songs -->
+            <div class="column songs-column">
+                <h2 id="current-playlist-name"><i class="fas fa-play-circle"></i> Select a Playlist</h2>
+                <div id="songs-list" class="scrollable-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome for Spotify-style icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="script.js"></script>
 </body>
+
 </html>
