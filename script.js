@@ -14,11 +14,11 @@ const playlistsTable = document.getElementById('playlists-table');
 // 1. Check for tokens in URL (after Spotify redirect)
 const params = new URLSearchParams(window.location.hash.substring(1));
 const accessToken = params.get('access_token');
-const refreshToken = params.get('refresh_token');
+const storedRefreshToken = params.get('refresh_token');
 
 if (accessToken) {
   localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-  if (refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  if (storedRefreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, storedRefreshToken);
   window.history.replaceState({}, document.title, window.location.pathname); // Clean URL
 }
 
