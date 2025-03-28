@@ -21,24 +21,21 @@
         </header>
 
         <div class="columns-container">
-            <!-- Column 1: Playlists -->
-            <div class="column playlists-column">
+            <!-- Combined Column 1 & 2 -->
+            <div class="column combined-column">
+              <div class="playlist-header">
                 <h2><i class="fas fa-list"></i> Your Playlists</h2>
-                <div id="playlists-list" class="scrollable-content"></div>
-            </div>
-
-            <!-- Column 2: Track Count -->
-            <div class="column track-count-column">
                 <h2><i class="fas fa-music"></i> Tracks</h2>
-                <div id="track-counts" class="scrollable-content"></div>
+              </div>
+              <div id="playlists-and-counts" class="scrollable-content"></div>
             </div>
-
-            <!-- Column 3: Songs -->
+          
+            <!-- Column 3 (Songs) -->
             <div class="column songs-column">
-                <h2 id="current-playlist-name"><i class="fas fa-play-circle"></i> Select a Playlist</h2>
-                <div id="songs-list" class="scrollable-content"></div>
+              <h2 id="current-playlist-name"><i class="fas fa-play-circle"></i> Select a Playlist</h2>
+              <div id="songs-list" class="scrollable-content"></div>
             </div>
-        </div>
+          </div>
     </div>
 
     <!-- Font Awesome for Spotify-style icons -->

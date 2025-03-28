@@ -147,3 +147,61 @@ body {
     margin-right: 8px;
     color: var(--spotify-green);
 }
+/* Combined columns */
+.combined-column {
+  flex: 1.5; /* Wider than songs column */
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px; /* Match Spotify's spacing */
+}
+
+.playlist-header h2 {
+  flex: 1;
+  text-align: left;
+}
+
+.playlist-header h2:last-child {
+  text-align: right;
+  padding-right: 30px; /* Account for scrollbar */
+}
+
+/* Numbered playlist items */
+.playlist-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--spotify-dark-gray);
+}
+
+.playlist-row:hover {
+  background-color: rgba(29, 185, 84, 0.1);
+}
+/* Number styling */
+.playlist-number {
+  color: var(--spotify-green);
+  font-weight: bold;
+  margin-right: 10px;
+  width: 25px;
+  display: inline-block;
+  text-align: right;
+}
+
+/* Track count alignment */
+.track-count {
+  min-width: 50px;
+  text-align: right;
+  padding-right: 20px;
+}
+
+/* Login button fix */
+#login-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}

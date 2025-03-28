@@ -79,58 +79,78 @@ async function refreshToken() {
   }
 }
 
+// // 5. Display Playlists in Three Columns + Track Loading
+// async function displayPlaylists(playlists) {
+//     const playlistsList = document.getElementById('playlists-list');
+//     const trackCounts = document.getElementById('track-counts');
+
+//     playlistsList.innerHTML = '';
+//     trackCounts.innerHTML = '';
+
+//     playlists.forEach(playlist => {
+//       // Playlist column
+//       const playlistItem = document.createElement('div');
+//       playlistItem.className = 'playlist-item';
+//       playlistItem.textContent = playlist.name;
+//       playlistItem.addEventListener('click', () => loadPlaylistTracks(playlist));
+//       playlistsList.appendChild(playlistItem);
+
+//       // Track count column
+//       const trackCountItem = document.createElement('div');
+//       trackCountItem.className = 'track-item';
+//       trackCountItem.textContent = playlist.tracks.total;
+//       trackCounts.appendChild(trackCountItem);
+//     });
+//   }
+
 // 5. Display Playlists in Three Columns + Track Loading
-async function displayPlaylists(playlists) {
-    const playlistsList = document.getElementById('playlists-list');
-    const trackCounts = document.getElementById('track-counts');
-    
-    playlistsList.innerHTML = '';
-    trackCounts.innerHTML = '';
-  
-    playlists.forEach(playlist => {
-      // Playlist column
-      const playlistItem = document.createElement('div');
-      playlistItem.className = 'playlist-item';
-      playlistItem.textContent = playlist.name;
-      playlistItem.addEventListener('click', () => loadPlaylistTracks(playlist));
-      playlistsList.appendChild(playlistItem);
-  
-      // Track count column
-      const trackCountItem = document.createElement('div');
-      trackCountItem.className = 'track-item';
-      trackCountItem.textContent = playlist.tracks.total;
-      trackCounts.appendChild(trackCountItem);
+function displayPlaylists(playlists) {
+  const container = document.getElementById('playlists-and-counts');
+  container.innerHTML = '';
+
+  playlists.forEach((playlist, index) => {
+    const row = document.createElement('div');
+    row.className = 'playlist-row';
+    row.innerHTML = `
+      <div class="playlist-name">
+        <span class="playlist-number">${index + 1}.</span>
+        ${playlist.name}
+      </div>
+      <div class="track-count">${playlist.tracks.total}</div>
+    `;
+    row.addEventListener('click', () => loadPlaylistTracks(playlist));
+    container.appendChild(row);
+  });
+}
+
+// 6. Load Tracks for Selected Playlist
+async function loadPlaylistTracks(playlist) {
+  const songsList = document.getElementById('songs-list');
+  const playlistName = document.getElementById('current-playlist-name');
+
+  playlistName.textContent = playlist.name;
+  songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
+
+  try {
+    const response = await fetch(playlist.tracks.href, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('spotify_access_token')}` }
     });
-  }
-  
-  // 6. Load Tracks for Selected Playlist
-  async function loadPlaylistTracks(playlist) {
-    const songsList = document.getElementById('songs-list');
-    const playlistName = document.getElementById('current-playlist-name');
-    
-    playlistName.textContent = playlist.name;
-    songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
-  
-    try {
-      const response = await fetch(playlist.tracks.href, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('spotify_access_token')}` }
-      });
-      const data = await response.json();
-      
-      songsList.innerHTML = '';
-      data.items.forEach(item => {
-        const trackItem = document.createElement('div');
-        trackItem.className = 'track-item';
-        trackItem.innerHTML = `
+    const data = await response.json();
+
+    songsList.innerHTML = '';
+    data.items.forEach(item => {
+      const trackItem = document.createElement('div');
+      trackItem.className = 'track-item';
+      trackItem.innerHTML = `
           <span class="track-name">${item.track.name}</span>
           <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
         `;
-        songsList.appendChild(trackItem);
-      });
-    } catch (error) {
-      songsList.innerHTML = '<div class="error">Failed to load tracks</div>';
-    }
+      songsList.appendChild(trackItem);
+    });
+  } catch (error) {
+    songsList.innerHTML = '<div class="error">Failed to load tracks</div>';
   }
+}
 
 // Auto-fetch playlists if already logged in
 if (localStorage.getItem(ACCESS_TOKEN_KEY)) {
