@@ -3,7 +3,7 @@ const SPOTIFY_CONFIG = {
   CLIENT_ID: '42eb51d7405d4868be4d5c84f2cf7a11', // My client ID
   REDIRECT_URI: window.location.hostname === "localhost" 
     ? "http://localhost:8000" 
-    : "https://your-netlify-site.netlify.app", // Match Netlify URL
+    : "https://lucent-crepe-6000e1.netlify.app/", // Netlify URL
   SCOPES: 'playlist-read-private'
 };
 
