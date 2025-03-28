@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Playlist Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -14,33 +14,40 @@
             <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png"
                 alt="Spotify Logo" class="logo">
             <h1>Your Playlists</h1>
-            <button id="login-btn" class="spotify-btn">
+            <button id="login-btn" class="spotify-btn" aria-label="Login with Spotify">
                 <span class="btn-icon">♪</span>
                 Login with Spotify
             </button>
         </header>
 
-        <div class="columns-container">
+        <!-- Loading State -->
+        <div id="loading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Loading your playlists...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-container" style="display: none;"></div>
+
+        <!-- Main Content -->
+        <div class="columns-container" style="display: none;">
             <!-- Combined Column 1 & 2 -->
             <div class="column combined-column">
               <div class="playlist-header">
-                <h2><i class="fas fa-list"></i> Your Playlists</h2>
-                <h2><i class="fas fa-music"></i> Tracks</h2>
+                <h2><i class="fas fa-list" aria-hidden="true"></i> Your Playlists</h2>
+                <h2><i class="fas fa-music" aria-hidden="true"></i> Tracks</h2>
               </div>
               <div id="playlists-and-counts" class="scrollable-content"></div>
             </div>
           
             <!-- Column 3 (Songs) -->
             <div class="column songs-column">
-              <h2 id="current-playlist-name"><i class="fas fa-play-circle"></i> Select a Playlist</h2>
+              <h2 id="current-playlist-name"><i class="fas fa-play-circle" aria-hidden="true"></i> Select a Playlist</h2>
               <div id="songs-list" class="scrollable-content"></div>
             </div>
           </div>
     </div>
 
-    <!-- Font Awesome for Spotify-style icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="script.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,10 @@
+[build]
+  command = "echo 'No build needed for static site'"
+  publish = "."  # Looks for files in root folder
+  functions = "netlify/functions"  # Points to your functions folder
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
