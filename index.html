@@ -3,11 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        connect-src 'self' https://api.spotify.com https://accounts.spotify.com;
+        img-src 'self' https://storage.googleapis.com https://i.scdn.co;
+        script-src 'self';
+        style-src 'self' https://cdnjs.cloudflare.com;
+        font-src https://cdnjs.cloudflare.com">
     <title>Spotify Playlist Viewer</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
-    <link rel="stylesheet" href="/src/styles.css">
-    <!-- <link rel="icon" href="data:,"> Disable favicon 404 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="src/styles.css">
+    <link rel="icon" href="https://www.spotify.com/favicon.ico">
 </head>
 
 <body>
@@ -18,7 +24,7 @@
             <h1>Your Playlists</h1>
             <button id="login-btn" class="spotify-btn" aria-label="Login with Spotify">
                 <span class="btn-icon">♪</span>
-                Login with Spotify
+                <span class="btn-text">Login with Spotify</span>
             </button>
         </header>
 
@@ -29,27 +35,27 @@
         </div>
 
         <!-- Error Message -->
-        <div id="error-message" class="error-container" style="display: none;"></div>
+        <div id="error-message" class="error-container" aria-live="polite" style="display: none;"></div>
 
         <!-- Main Content -->
-        <div class="columns-container" style="display: none;">
+        <main class="columns-container" style="display: none;">
             <!-- Combined Column 1 & 2 -->
             <div class="column combined-column">
-              <div class="playlist-header">
-                <h2><i class="fas fa-list" aria-hidden="true"></i> Your Playlists</h2>
-                <h2><i class="fas fa-music" aria-hidden="true"></i> Tracks</h2>
-              </div>
-              <div id="playlists-and-counts" class="scrollable-content"></div>
+                <div class="playlist-header">
+                    <h2><i class="fas fa-list" aria-hidden="true"></i> Your Playlists</h2>
+                    <h2><i class="fas fa-music" aria-hidden="true"></i> Tracks</h2>
+                </div>
+                <div id="playlists-and-counts" class="scrollable-content" role="list"></div>
             </div>
           
             <!-- Column 3 (Songs) -->
             <div class="column songs-column">
-              <h2 id="current-playlist-name"><i class="fas fa-play-circle" aria-hidden="true"></i> Select a Playlist</h2>
-              <div id="songs-list" class="scrollable-content"></div>
+                <h2 id="current-playlist-name"><i class="fas fa-play-circle" aria-hidden="true"></i> Select a Playlist</h2>
+                <div id="songs-list" class="scrollable-content" role="list"></div>
             </div>
-          </div>
+        </main>
     </div>
 
-    <script src="/src/script.js"></script>
+    <script src="src/script.js" defer></script>
 </body>
 </html>
