@@ -11,6 +11,7 @@ const SPOTIFY_CONFIG = {
 // DOM Elements
 const elements = {
   loginBtn: document.getElementById('login-btn'),
+  logoutBtn: document.getElementById('logout-btn'),
   playlistsContainer: document.getElementById('playlists-and-counts'),
   songsList: document.getElementById('songs-list'),
   playlistName: document.getElementById('current-playlist-name'),
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   elements.loginBtn.addEventListener('click', handleLogin);
+  elements.logoutBtn.addEventListener('click', handleLogout);
 });
 
 // Authentication Functions
@@ -84,6 +86,12 @@ function handleLogin() {
   authUrl.searchParams.append('show_dialog', 'true');
   
   window.location.href = authUrl.toString();
+}
+
+//Logout funtionality
+function handleLogout() {
+  TokenManager.clearTokens();
+  window.location.href = window.location.pathname;
 }
 
 async function handleTokenExchange(code) {
@@ -113,11 +121,16 @@ async function handleTokenExchange(code) {
 }
 
 function checkAuthStatus() {
-  if (TokenManager.getAccessToken() && !TokenManager.isTokenExpired()) {
-    elements.loginBtn.textContent = 'Refresh Playlists';
-    fetchPlaylists();
-  } else if (TokenManager.getRefreshToken()) {
-    refreshAccessToken();
+  if (TokenManager.getAccessToken()) {
+    if (TokenManager.isTokenExpired() && TokenManager.getRefreshToken()) {
+      refreshAccessToken();
+    } else {
+      updateUIForLoggedInState();
+      elements.loginBtn.textContent='Refresh Playlists';
+      fetchPlaylists();
+    }
+  } else {
+    updateUIForLoggedOutState();
   }
 }
 
@@ -136,10 +149,12 @@ async function refreshAccessToken() {
     
     const data = await response.json();
     TokenManager.storeTokens(data);
+    updateUIForLoggedInState();
     fetchPlaylists();
   } catch (error) {
     showError('Session expired. Please login again.');
     TokenManager.clearTokens();
+    updateUIForLoggedOutState();
     elements.loginBtn.textContent = 'Login with Spotify';
   }
 }
@@ -227,8 +242,9 @@ function displayPlaylists(playlists) {
 async function loadPlaylistTracks(playlist) {
   showLoading(true);
   try {
-    elements.playlistName.textContent = playlist.name;
-    elements.songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
+     // Update the playlist name in the UI
+     elements.playlistName.innerHTML = `<i class="fas fa-play-circle" aria-hidden="true"></i> ${playlist.name}`;
+     elements.songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
 
     const response = await fetchWithTokenRefresh(
       `${SPOTIFY_CONFIG.API_BASE}/playlists/${playlist.id}/tracks?limit=100`
@@ -237,7 +253,8 @@ async function loadPlaylistTracks(playlist) {
 
     displayTracks(data.items);
   } catch (error) {
-    elements.songsList.innerHTML = '<div class="error">Failed to load tracks</div>';
+    showError('Failed to load tracks. Please try again!')
+    elements.songsList.innerHTML = '<div class="error">Failed to load tracks.</div>';
     console.error('Track load error:', error);
   } finally {
     showLoading(false);
@@ -293,4 +310,21 @@ function showError(message) {
   setTimeout(() => {
     elements.errorMessage.style.display = 'none';
   }, 5000);
+}
+
+//  UI status update functions
+function updateUIForLoggedInState() {
+  elements.loginBtn.textContent = 'Refresh Playlists';
+  elements.loginBtn.style.display = 'block';
+  elements.logoutBtn.style.display = 'block';
+  elements.playlistName.textContent = 'Select a Playlist'; // Reset playlist name
+}
+
+function updateUIForLoggedOutState() {
+  elements.loginBtn.textContent = 'Login with Spotify';
+  elements.logoutBtn.style.display = 'none';
+  elements.columnsContainer.style.display = 'none';
+  elements.playlistsContainer.innerHTML = '';
+  elements.songsList.innerHTML = '';
+  elements.playlistName.textContent = 'Select a Playlist';
 }

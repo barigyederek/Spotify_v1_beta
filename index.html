@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,6 +27,12 @@
                 <span class="btn-icon">♪</span>
                 <span class="btn-text">Login with Spotify</span>
             </button>
+
+            <button id="logout-btn" class="spotify-btn" aria-label="Logout"
+                style="display: none; left: 20px; right: auto;">
+                <span class="btn-icon">⎋</span>
+                <span class="btn-text">Logout</span>
+            </button>
         </header>
 
         <!-- Loading State -->
@@ -47,10 +54,11 @@
                 </div>
                 <div id="playlists-and-counts" class="scrollable-content" role="list"></div>
             </div>
-          
+
             <!-- Column 3 (Songs) -->
             <div class="column songs-column">
-                <h2 id="current-playlist-name"><i class="fas fa-play-circle" aria-hidden="true"></i> Select a Playlist</h2>
+                <h2 id="current-playlist-name"><i class="fas fa-play-circle" aria-hidden="true"></i> Select a Playlist
+                </h2>
                 <div id="songs-list" class="scrollable-content" role="list"></div>
             </div>
         </main>
@@ -58,4 +66,5 @@
 
     <script src="src/script.js" defer></script>
 </body>
+
 </html>

@@ -250,7 +250,8 @@ body {
   .spotify-header {
     flex-direction: column;
     gap: 0.9375rem;
-    padding: 1.25rem 0.9375rem;
+    position: relative;
+    padding: 20px 100px; /* Add more padding to accommodate buttons */
   }
   
   .spotify-btn {
@@ -277,4 +278,19 @@ body {
   .scrollable-content {
     max-height: 50vh;
   }
+}
+
+#logout-btn {
+  left: 20px;
+  right: auto;
+  background-color: var(--spotify-dark-gray);
+}
+
+#logout-btn:hover {
+  background-color: #6e6e6e;
+}
+
+#login-btn {
+  right: 20px;
+  left: auto;
 }
