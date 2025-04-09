@@ -17,8 +17,9 @@ const elements = {
   playlistName: document.getElementById('current-playlist-name'),
   loading: document.getElementById('loading'),
   errorMessage: document.getElementById('error-message'),
-  columnsContainer: document.querySelector('.columns-container')
-};
+  columnsContainer: document.querySelector('.columns-container'),
+  appContainer: document.querySelector('.app-container') 
+}; 
 
 // Token Management
 const TokenManager = {
@@ -242,16 +243,19 @@ function displayPlaylists(playlists) {
 async function loadPlaylistTracks(playlist) {
   showLoading(true);
   try {
-     // Update the playlist name in the UI
-     elements.playlistName.innerHTML = `<i class="fas fa-play-circle" aria-hidden="true"></i> ${playlist.name}`;
-     elements.songsList.innerHTML = '<div class="loading">Loading tracks...</div>';
+    // Update the playlist name header
+    elements.playlistName.innerHTML = `<i class="fas fa-play-circle" aria-hidden="true"></i> ${playlist.name}`;
 
-    const response = await fetchWithTokenRefresh(
-      `${SPOTIFY_CONFIG.API_BASE}/playlists/${playlist.id}/tracks?limit=100`
-    );
-    const data = await response.json();
-
-    displayTracks(data.items);
+    // Fetch tracks with offset handling for large playlists
+    let allTracks = [];
+    let url = `${SPOTIFY_CONFIG.API_BASE}/playlists/${playlist.id}/tracks?limit=50`;
+    
+    while (url) {
+      const response = await fetchWithTokenRefresh(url);
+      if (!response.ok) throw new Error('Failed to load tracks');
+      const data = await response.json();
+      allTracks = [...allTracks, ...data.items];
+      url = data.next;
   } catch (error) {
     showError('Failed to load tracks. Please try again!')
     elements.songsList.innerHTML = '<div class="error">Failed to load tracks.</div>';
@@ -264,44 +268,52 @@ async function loadPlaylistTracks(playlist) {
 function displayTracks(tracks) {
   elements.songsList.innerHTML = '';
 
-  if (!tracks.length) {
-    elements.songsList.innerHTML = '<div class="empty">No tracks found</div>';
-    return;
+  if (allTracks.length > 0) {
+    elements.songsList.innerHTML = '';
+    allTracks.forEach((item, index) => {
+      if (item.track) {
+        const trackElement = document.createElement('div');
+        trackElement.className = 'track-item';
+        trackElement.innerHTML = `
+          <span class="track-number">${index + 1}.</span>
+          <span class="track-name">${item.track.name}</span>
+          <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
+          <span class="track-duration">${formatDuration(item.track.duration_ms)}</span>
+        `;
+        elements.songsList.appendChild(trackElement);
+      }
+    });
+  } else {
+    elements.songsList.innerHTML = '<div class="empty-message">No tracks found in this playlist</div>';
   }
-
-  const filteredTracks = tracks.filter(item => item.track);
-  
-  if (!filteredTracks.length) {
-    elements.songsList.innerHTML = '<div class="empty">No playable tracks found</div>';
-    return;
+  catch (error) {
+    console.error('Error loading tracks:', error);
+    elements.songsList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
+    showError(error.message);
+  } finally {
+    showLoading(false);
   }
+} 
 
-  filteredTracks.forEach((item, index) => {
-    const trackItem = document.createElement('div');
-    trackItem.className = 'track-item';
-    trackItem.tabIndex = 0;
-    trackItem.innerHTML = `
-      <span class="track-number">${index + 1}.</span>
-      <span class="track-name">${item.track.name}</span>
-      <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
-      <span class="track-duration">${formatDuration(item.track.duration_ms)}</span>
-    `;
-    elements.songsList.appendChild(trackItem);
-  });
-}
+
 
 // Utility Functions
 function formatDuration(ms) {
   const minutes = Math.floor(ms / 60000);
   const seconds = ((ms % 60000) / 1000).toFixed(0);
-  return `${minutes}:${seconds.padStart(2, '0')}`;
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
 function showLoading(show) {
-  elements.loading.style.display = show ? 'flex' : 'none';
-  if (!show) return;
-  elements.columnsContainer.style.display = 'none';
-  elements.errorMessage.style.display = 'none';
+  if (show) {
+    elements.loading.style.display = 'flex';
+    elements.columnsContainer.style.display = 'none';
+  } else {
+    elements.loading.style.display = 'none';
+    if (TokenManager.getAccessToken()) {
+      elements.columnsContainer.style.display = 'flex';
+    }
+  }
 }
 
 function showError(message) {
@@ -315,16 +327,21 @@ function showError(message) {
 //  UI status update functions
 function updateUIForLoggedInState() {
   elements.loginBtn.textContent = 'Refresh Playlists';
-  elements.loginBtn.style.display = 'block';
-  elements.logoutBtn.style.display = 'block';
-  elements.playlistName.textContent = 'Select a Playlist'; // Reset playlist name
+  elements.loginBtn.classList.remove('centered');
+  elements.logoutBtn.style.display = 'flex';
+  elements.playlistName.textContent = 'Select a Playlist';
+  elements.appContainer.classList.remove('logged-out');
 }
+
 
 function updateUIForLoggedOutState() {
   elements.loginBtn.textContent = 'Login with Spotify';
+  elements.loginBtn.classList.add('centered');
   elements.logoutBtn.style.display = 'none';
   elements.columnsContainer.style.display = 'none';
   elements.playlistsContainer.innerHTML = '';
   elements.songsList.innerHTML = '';
   elements.playlistName.textContent = 'Select a Playlist';
+  elements.loading.style.display = 'none';
+  elements.appContainer.classList.add('logged-out');
 }

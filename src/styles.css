@@ -36,6 +36,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.spotify-header h1 {
+  margin: 0;
+  flex-grow: 1;
+  text-align: center;
 }
 
 .logo {
@@ -214,8 +223,13 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error States */
@@ -246,51 +260,67 @@ body {
     flex-direction: column;
     padding: 0.9375rem;
   }
-  
+
   .spotify-header {
     flex-direction: column;
     gap: 0.9375rem;
     position: relative;
-    padding: 20px 100px; /* Add more padding to accommodate buttons */
+    padding: 20px 100px;
+    /* Add more padding to accommodate buttons */
   }
-  
+
   .spotify-btn {
     position: static;
     margin-top: 0.9375rem;
     justify-content: center;
   }
-  
+
   .column {
     min-height: 18.75rem;
   }
-  
+
   .playlist-header {
     flex-direction: column;
     gap: 0.625rem;
     text-align: center;
   }
-  
+
   .playlist-header h2:last-child {
     text-align: center;
     padding-right: 0;
   }
-  
+
   .scrollable-content {
     max-height: 50vh;
   }
 }
 
+#login-btn {
+  right: 20px;
+  left: auto;
+  position: absolute;
+  transition: all 0.3s ease;
+}
+
+#login-btn.centered {
+  position: static;
+  margin: 20px auto;
+}
+
+/* Logout button styles */
 #logout-btn {
+  position: absolute;
   left: 20px;
   right: auto;
   background-color: var(--spotify-dark-gray);
+  transition: all 0.3s ease;
 }
 
 #logout-btn:hover {
   background-color: #6e6e6e;
 }
 
-#login-btn {
-  right: 20px;
-  left: auto;
+/* Loading state adjustments */
+.logged-out .loading-container {
+  display: none;
 }
