@@ -1,8 +1,8 @@
 // Spotify Configuration
 const SPOTIFY_CONFIG = {
   CLIENT_ID: '42eb51d7405d4868be4d5c84f2cf7a11',
-  REDIRECT_URI: window.location.hostname === "localhost" 
-    ? "http://localhost:8000" 
+  REDIRECT_URI: window.location.hostname === "localhost"
+    ? "http://localhost:8000"
     : "https://lucent-crepe-6000e1.netlify.app/",
   SCOPES: 'playlist-read-private',
   API_BASE: 'https://api.spotify.com/v1'
@@ -18,8 +18,8 @@ const elements = {
   loading: document.getElementById('loading'),
   errorMessage: document.getElementById('error-message'),
   columnsContainer: document.querySelector('.columns-container'),
-  appContainer: document.querySelector('.app-container') 
-}; 
+  appContainer: document.querySelector('.app-container')
+};
 
 // Token Management
 const TokenManager = {
@@ -85,7 +85,7 @@ function handleLogin() {
   authUrl.searchParams.append('redirect_uri', SPOTIFY_CONFIG.REDIRECT_URI);
   authUrl.searchParams.append('scope', SPOTIFY_CONFIG.SCOPES);
   authUrl.searchParams.append('show_dialog', 'true');
-  
+
   window.location.href = authUrl.toString();
 }
 
@@ -127,7 +127,7 @@ function checkAuthStatus() {
       refreshAccessToken();
     } else {
       updateUIForLoggedInState();
-      elements.loginBtn.textContent='Refresh Playlists';
+      elements.loginBtn.textContent = 'Refresh Playlists';
       fetchPlaylists();
     }
   } else {
@@ -140,14 +140,14 @@ async function refreshAccessToken() {
     const response = await fetch('/.netlify/functions/spotify-auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         refresh_token: TokenManager.getRefreshToken(),
         grant_type: 'refresh_token'
       })
     });
 
     if (!response.ok) throw new Error('Token refresh failed');
-    
+
     const data = await response.json();
     TokenManager.storeTokens(data);
     updateUIForLoggedInState();
@@ -193,7 +193,7 @@ async function fetchPlaylists() {
   try {
     let allPlaylists = [];
     let url = `${SPOTIFY_CONFIG.API_BASE}/me/playlists?limit=50`;
-    
+
     while (url) {
       const response = await fetchWithTokenRefresh(url);
       const data = await response.json();
@@ -212,7 +212,7 @@ async function fetchPlaylists() {
 
 function displayPlaylists(playlists) {
   elements.playlistsContainer.innerHTML = '';
-  
+
   if (playlists.length === 0) {
     elements.playlistsContainer.innerHTML = '<div class="empty">No playlists found</div>';
     return;
@@ -249,13 +249,14 @@ async function loadPlaylistTracks(playlist) {
     // Fetch tracks with offset handling for large playlists
     let allTracks = [];
     let url = `${SPOTIFY_CONFIG.API_BASE}/playlists/${playlist.id}/tracks?limit=50`;
-    
+
     while (url) {
       const response = await fetchWithTokenRefresh(url);
       if (!response.ok) throw new Error('Failed to load tracks');
       const data = await response.json();
       allTracks = [...allTracks, ...data.items];
       url = data.next;
+    }
   } catch (error) {
     showError('Failed to load tracks. Please try again!')
     elements.songsList.innerHTML = '<div class="error">Failed to load tracks.</div>';
@@ -286,14 +287,13 @@ function displayTracks(tracks) {
   } else {
     elements.songsList.innerHTML = '<div class="empty-message">No tracks found in this playlist</div>';
   }
-  catch (error) {
-    console.error('Error loading tracks:', error);
-    elements.songsList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
-    showError(error.message);
-  } finally {
-    showLoading(false);
-  }
-} 
+//  } catch (error) {
+//   console.error('Error loading tracks:', error);
+//   elements.songsList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
+//   showError(error.message);
+// } finally {
+//   showLoading(false); }
+ }
 
 
 
