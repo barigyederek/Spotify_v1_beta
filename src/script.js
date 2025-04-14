@@ -257,6 +257,7 @@ async function loadPlaylistTracks(playlist) {
       allTracks = [...allTracks, ...data.items];
       url = data.next;
     }
+    displayTracks(allTracks);
   } catch (error) {
     showError('Failed to load tracks. Please try again!')
     elements.songsList.innerHTML = '<div class="error">Failed to load tracks.</div>';
