@@ -269,25 +269,25 @@ async function loadPlaylistTracks(playlist) {
 
 function displayTracks(tracks) {
   elements.songsList.innerHTML = '';
-
-  if (allTracks.length > 0) {
-    elements.songsList.innerHTML = '';
-    allTracks.forEach((item, index) => {
-      if (item.track) {
-        const trackElement = document.createElement('div');
-        trackElement.className = 'track-item';
-        trackElement.innerHTML = `
-          <span class="track-number">${index + 1}.</span>
-          <span class="track-name">${item.track.name}</span>
-          <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
-          <span class="track-duration">${formatDuration(item.track.duration_ms)}</span>
-        `;
-        elements.songsList.appendChild(trackElement);
-      }
-    });
-  } else {
-    elements.songsList.innerHTML = '<div class="empty-message">No tracks found in this playlist</div>';
+  
+  if (tracks.length === 0) {
+      elements.songsList.innerHTML = '<div class="empty-message">No tracks found in this playlist</div>';
+      return;
   }
+
+  tracks.forEach((item, index) => {
+    if (item.track) {
+      const trackElement = document.createElement('div');
+      trackElement.className = 'track-item';
+      trackElement.innerHTML = `
+        <span class="track-number">${index + 1}.</span>
+        <span class="track-name">${item.track.name}</span>
+        <span class="track-artist">${item.track.artists.map(a => a.name).join(', ')}</span>
+        <span class="track-duration">${formatDuration(item.track.duration_ms)}</span>
+      `;
+      elements.songsList.appendChild(trackElement);
+    }
+  });
 //  } catch (error) {
 //   console.error('Error loading tracks:', error);
 //   elements.songsList.innerHTML = '<div class="error">Failed to load tracks. Please try again.</div>';
